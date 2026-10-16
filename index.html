@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeKey Pro (Rules Edition) - Claims ICR Data Entry Training Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Realistic Handwritten and OCR Typefaces -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Courier+Prime:wght@700&family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600;700&family=Nanum+Pen+Script&family=Permanent+Marker&family=Reenie+Beanie&family=Shadows+Into+Light&family=Special+Elite&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            500: '#102a43',
+                            600: '#0b69a3',
+                            700: '#035388',
+                            800: '#013e6a',
+                            900: '#002744',
+                            accent: '#00b4d8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        hw1: ['Caveat', 'cursive'],
+                        hw2: ['Dancing Script', 'cursive'],
+                        hw3: ['Nanum Pen Script', 'cursive'],
+                        hw4: ['Permanent Marker', 'cursive'],
+                        hw5: ['Reenie Beanie', 'cursive'],
+                        hw6: ['Shadows Into Light', 'cursive'],
+                        print1: ['Courier Prime', 'monospace'],
+                        print2: ['Special Elite', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .checkerboard {
+            background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
+                              linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #1e293b 75%), 
+                              linear-gradient(-45deg, transparent 75%, #1e293b 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+        }
+        .diff-add { background-color: #dcfce7; color: #166534; font-weight: bold; text-decoration: underline; padding: 0 2px; }
+        .diff-del { background-color: #fee2e2; color: #991b1b; text-decoration: line-through; font-weight: bold; padding: 0 2px; }
+        .diff-sub { background-color: #fef3c7; color: #92400e; font-weight: bold; padding: 0 2px; }
+        
+        .btn-hover-effect {
+            transition: all 0.15s ease-in-out;
+        }
+        .btn-hover-effect:active {
+            transform: scale(0.97);
+        }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-accent selection:text-slate-900">
+
+    <header class="bg-slate-950 border-b border-slate-800 px-4 py-3 sticky top-0 z-30 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <!-- Brand Title & Active Operator Indicator -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-brand-700 to-brand-accent p-2.5 rounded-xl shadow-md text-white">
+                    <i class="fa-solid fa-eye text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-wide text-white flex items-center gap-2">
+                        EyeKey Practice <span class="text-xs bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-2 py-0.5 rounded-full font-mono font-medium">Enterprise v5.0</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">
+                        Operator: <span id="headerOperatorDisplay" class="font-bold text-slate-200">Not Logged In</span> | 
+                        Target: <span id="headerDurationDisplay" class="text-brand-accent font-semibold">3 Mins</span> |
+                        <span class="text-brand-accent font-medium">Created by Saleem</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Top Action Controls -->
+            <div class="flex flex-wrap items-center gap-2.5">
+                <!-- Form Filter Selector -->
+                <div class="bg-slate-900 border border-slate-700/80 rounded-lg p-1 flex items-center text-xs">
+                    <span class="text-slate-400 px-2 font-medium"><i class="fa-solid fa-file-medical text-brand-accent mr-1"></i>Form:</span>
+                    <select id="claimTypeSelect" class="bg-slate-800 text-slate-100 border border-slate-700 rounded px-2 py-1 focus:outline-none focus:border-brand-accent font-medium cursor-pointer">
+                        <option value="all">All Claims (500+ Pool)</option>
+                        <option value="hcfa">CMS-1500 (HCFA)</option>
+                        <option value="ub04">UB-04 (Institutional)</option>
+                        <option value="ada">ADA Dental Claim</option>
+                        <option value="general">General / Financial</option>
+                    </select>
+                </div>
+
+                <button id="cheatSheetBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 btn-hover-effect">
+                    <i class="fa-solid fa-book-open text-amber-400"></i> Rules SOP
+                </button>
+
+                <button id="restartSessionSetupBtn" class="bg-brand-600 hover:bg-brand-500 text-white border border-brand-400/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 btn-hover-effect">
+                    <i class="fa-solid fa-rotate text-xs"></i> New Session Setup
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: Snippet Canvas Viewport & Entry Inputs (Col 8) -->
+        <section class="lg:col-span-8 flex flex-col gap-4">
+
+            <!-- Active Field Header & Countdown Clock -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-3.5 shadow-md flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <span id="fieldTypeBadge" class="bg-brand-600/30 text-brand-accent border border-brand-accent/40 font-mono text-xs px-2.5 py-1 rounded-md uppercase font-semibold tracking-wider">
+                        CMS-1500: BOX 24D (CPT/HCPCS)
+                    </span>
+                    <span id="samplePoolCount" class="text-xs text-slate-400 font-medium">
+                        Sample 1 of 500+ Pool
+                    </span>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <button id="viewFullContextBtn" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1 rounded flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-magnifying-glass-plus text-brand-accent"></i> Full Claim Context
+                    </button>
+                    <!-- Countdown Display -->
+                    <div class="bg-slate-900 border border-slate-700 rounded px-3 py-1 flex items-center gap-2">
+                        <i class="fa-solid fa-stopwatch text-amber-400 text-xs"></i>
+                        <span id="countdownDisplay" class="font-mono text-emerald-400 text-sm font-bold">03:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Viewport Container with Image Adjusters -->
+            <div class="relative bg-slate-950 border-2 border-slate-700 rounded-xl overflow-hidden shadow-2xl flex flex-col">
+                
+                <!-- Toolbar Overlay Top Bar -->
+                <div class="bg-slate-900/90 border-b border-slate-800 px-4 py-2 flex items-center justify-between z-10">
+                    <div class="flex items-center space-x-1.5 text-xs text-slate-400 font-mono">
+                        <i class="fa-solid fa-eye text-brand-accent"></i>
+                        <span>ICR ENHANCED CANVAS VIEWPORT</span>
+                    </div>
+
+                    <!-- Canvas Controls -->
+                    <div class="flex items-center space-x-1">
+                        <button id="zoomOutBtn" title="Zoom Out" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded text-xs transition"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                        <span id="zoomLevelDisplay" class="text-xs font-mono text-slate-400 px-1">100%</span>
+                        <button id="zoomInBtn" title="Zoom In" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded text-xs transition"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                        <div class="h-4 w-px bg-slate-700 mx-1"></div>
+                        <button id="invertBtn" title="Invert Colors (Negative) [Alt+I]" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded text-xs transition"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                        <button id="grayscaleBtn" title="Threshold B&W Mode" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded text-xs transition"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                        <button id="resetFiltersBtn" title="Reset Filters (Alt+F)" class="p-1.5 text-rose-400 hover:bg-slate-800 rounded text-xs transition"><i class="fa-solid fa-rotate-left"></i></button>
+                    </div>
+                </div>
+
+                <!-- Canvas Wrapper -->
+                <div class="relative w-full h-64 md:h-72 checkerboard flex items-center justify-center overflow-hidden p-4 select-none">
+                    <div id="canvasWrapper" class="transition-transform duration-100 ease-out origin-center shadow-lg rounded border border-slate-400/20">
+                        <canvas id="snippetCanvas" width="620" height="190" class="max-w-full h-auto rounded block bg-white"></canvas>
+                    </div>
+
+                    <!-- Floating Image Adjustment Sliders -->
+                    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-full px-4 py-1.5 flex items-center space-x-4 shadow-xl text-xs">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-sun text-amber-400 text-xs" title="Brightness"></i>
+                            <input type="range" id="brightnessSlider" min="50" max="200" value="100" class="w-16 accent-brand-accent cursor-pointer">
+                        </div>
+                        <div class="h-3 w-px bg-slate-700"></div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-half-stroke text-slate-300 text-xs" title="Contrast"></i>
+                            <input type="range" id="contrastSlider" min="50" max="250" value="100" class="w-16 accent-brand-accent cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Entry Input Bar -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-4 shadow-lg flex flex-col gap-3">
+                <div class="relative">
+                    <label for="transcriptionInput" class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider flex justify-between">
+                        <span>Transcribe Field Snippet:</span>
+                        <span class="text-amber-400 font-mono text-[11px]" id="liveRuleHint">Rule: Follow active entry guidelines</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="transcriptionInput" 
+                        placeholder="Key in exact characters from the claim snippet..."
+                        autocomplete="off" 
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        class="w-full bg-slate-950 border-2 border-slate-600 focus:border-brand-accent text-white font-mono text-lg md:text-xl rounded-xl px-4 py-3 focus:outline-none shadow-inner tracking-wider transition-colors placeholder:text-slate-600 placeholder:font-sans placeholder:text-sm"
+                    >
+                </div>
+
+                <!-- Input Action Buttons -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center space-x-2">
+                        <button id="flagIllegibleBtn" class="bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 btn-hover-effect">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            Flag Illegible <kbd class="bg-amber-900/50 text-amber-200 px-1 rounded text-[10px] font-mono">Esc</kbd>
+                        </button>
+                        <button id="skipBtn" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-2 rounded-lg text-xs font-medium btn-hover-effect">
+                            Skip
+                        </button>
+                    </div>
+
+                    <button id="submitBtn" class="bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-semibold px-6 py-2.5 rounded-lg text-sm flex items-center gap-2 shadow-lg shadow-brand-900/50 btn-hover-effect">
+                        Submit Entry <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instant Verification Feedback Panel -->
+            <div id="resultFeedbackPanel" class="hidden bg-slate-800 border rounded-xl p-4 shadow-xl transition-all">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div id="feedbackIconContainer" class="p-2.5 rounded-lg text-xl"></div>
+                        <div>
+                            <h3 id="feedbackTitle" class="font-bold text-sm">Verification Status</h3>
+                            <p id="feedbackSubtitle" class="text-xs text-slate-400"></p>
+                        </div>
+                    </div>
+                    <span id="accuracyDeltaBadge" class="text-xs font-mono font-bold px-2 py-1 rounded"></span>
+                </div>
+
+                <!-- Character Diff Comparison Box -->
+                <div id="comparisonBox" class="mt-3 bg-slate-950 rounded-lg p-3 border border-slate-700 text-xs font-mono space-y-1">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Expected:</span>
+                        <span id="expectedTextDisplay" class="text-emerald-400 font-bold"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Entered:</span>
+                        <span id="enteredTextDisplay" class="text-slate-200"></span>
+                    </div>
+                    <div id="diffRow" class="flex justify-between pt-1 border-t border-slate-800">
+                        <span class="text-slate-500">Diff Analysis:</span>
+                        <span id="diffDisplay"></span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- RIGHT COLUMN: Real-Time Analytics & Practice History (Col 4) -->
+        <section class="lg:col-span-4 flex flex-col gap-5">
+            
+            <!-- Live Metrics Card -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-4 shadow-lg space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+                    <h2 class="font-bold text-sm tracking-wide text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-brand-accent"></i> Real-time Telemetry
+                    </h2>
+                    <span class="text-xs text-emerald-400 font-mono font-medium flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active Test
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <!-- Accuracy Metric -->
+                    <div class="bg-slate-900 border border-slate-700/70 p-2.5 rounded-lg flex flex-col">
+                        <span class="text-[11px] text-slate-400 font-medium">Accuracy</span>
+                        <span id="accuracyMetric" class="text-2xl font-bold text-emerald-400 font-mono mt-0.5">100.0%</span>
+                        <span class="text-[10px] text-slate-500">Benchmark: &gt;98.5%</span>
+                    </div>
+
+                    <!-- KPH Metric -->
+                    <div class="bg-slate-900 border border-slate-700/70 p-2.5 rounded-lg flex flex-col">
+                        <span class="text-[11px] text-slate-400 font-medium">Speed (KPH)</span>
+                        <span id="kphMetric" class="text-2xl font-bold text-brand-accent font-mono mt-0.5">0</span>
+                        <span class="text-[10px] text-slate-500">Keys / Hour</span>
+                    </div>
+
+                    <!-- CPM Metric -->
+                    <div class="bg-slate-900 border border-slate-700/70 p-2.5 rounded-lg flex flex-col">
+                        <span class="text-[11px] text-slate-400 font-medium">CPM Rate</span>
+                        <span id="cpmMetric" class="text-xl font-bold text-slate-200 font-mono mt-0.5">0</span>
+                        <span id="wpmMetric" class="text-[10px] text-slate-400">~0 WPM</span>
+                    </div>
+
+                    <!-- Streak Counter -->
+                    <div class="bg-slate-900 border border-slate-700/70 p-2.5 rounded-lg flex flex-col">
+                        <span class="text-[11px] text-slate-400 font-medium">Perfect Streak</span>
+                        <span id="streakMetric" class="text-xl font-bold text-amber-400 font-mono mt-0.5">0 🔥</span>
+                        <span class="text-[10px] text-slate-500">Matches in a row</span>
+                    </div>
+                </div>
+
+                <!-- Fields Completed Progress Bar -->
+                <div class="space-y-1.5 pt-1">
+                    <div class="flex justify-between text-xs text-slate-300 font-medium">
+                        <span>Fields Processed</span>
+                        <span id="completedCount" class="font-mono text-slate-200">0 Fields</span>
+                    </div>
+                    <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-700">
+                        <div id="sessionProgressBar" class="bg-gradient-to-r from-brand-600 to-brand-accent h-full w-0 transition-all duration-300"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-500 font-mono">
+                        <span>Passed: <span id="passCount" class="text-emerald-400">0</span></span>
+                        <span>Errors: <span id="errorCount" class="text-rose-400">0</span></span>
+                        <span>Flagged: <span id="flagCount" class="text-amber-400">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Log -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-4 shadow-lg flex-1 flex flex-col">
+                <div class="flex items-center justify-between pb-2.5 border-b border-slate-700">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Practice History
+                    </h3>
+                    <button id="clearHistoryBtn" class="text-[10px] text-slate-500 hover:text-rose-400 transition">Clear Log</button>
+                </div>
+
+                <div class="mt-2 flex-1 overflow-y-auto max-h-60 lg:max-h-80 space-y-2 pr-1" id="historyListContainer">
+                    <div class="text-center py-8 text-xs text-slate-500 italic">
+                        No entries logged yet. Complete fields to track historical accuracy.
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ONBOARDING & SETUP MODAL -->
+    <div id="onboardingModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative flex flex-col">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="bg-gradient-to-tr from-brand-700 to-brand-accent p-3 rounded-xl text-white shadow-lg">
+                    <i class="fa-solid fa-id-card-clip text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white leading-tight">EyeKey Pro (Rules Edition) Practice Setup</h2>
+                    <p class="text-xs text-slate-400">Healthcare ICR & Data Entry Speed Benchmarking</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Operator Name Input -->
+                <div>
+                    <label for="operatorNameInput" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Operator Name / Employee ID:
+                    </label>
+                    <input 
+                        type="text" 
+                        id="operatorNameInput" 
+                        placeholder="e.g. Sarah Jenkins (OP-409)" 
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-brand-accent text-white font-medium text-sm rounded-xl px-4 py-2.5 focus:outline-none shadow-inner"
+                        value="Operator 1"
+                    >
+                </div>
+
+                <!-- Professional Session Time Selector -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                        Select Session Test Duration:
+                    </label>
+                    <div class="grid grid-cols-3 gap-2" id="timePresetGroup">
+                        <button type="button" data-mins="1" class="time-preset-btn bg-slate-800 border border-slate-700 hover:border-brand-accent text-slate-200 py-2.5 rounded-xl text-xs font-semibold flex flex-col items-center justify-center transition">
+                            <span class="text-sm font-bold text-white">1 Min</span>
+                            <span class="text-[10px] text-slate-400">Speed Test</span>
+                        </button>
+                        <button type="button" data-mins="3" class="time-preset-btn bg-slate-800 border-2 border-brand-accent text-slate-200 py-2.5 rounded-xl text-xs font-semibold flex flex-col items-center justify-center transition">
+                            <span class="text-sm font-bold text-brand-accent">3 Mins</span>
+                            <span class="text-[10px] text-slate-400">Standard</span>
+                        </button>
+                        <button type="button" data-mins="5" class="time-preset-btn bg-slate-800 border border-slate-700 hover:border-brand-accent text-slate-200 py-2.5 rounded-xl text-xs font-semibold flex flex-col items-center justify-center transition">
+                            <span class="text-sm font-bold text-white">5 Mins</span>
+                            <span class="text-[10px] text-slate-400">Endurance</span>
+                        </button>
+                        <button type="button" data-mins="10" class="time-preset-btn bg-slate-800 border border-slate-700 hover:border-brand-accent text-slate-200 py-2.5 rounded-xl text-xs font-semibold flex flex-col items-center justify-center transition">
+                            <span class="text-sm font-bold text-white">10 Mins</span>
+                            <span class="text-[10px] text-slate-400">Evaluation</span>
+                        </button>
+                        <button type="button" data-mins="custom" class="time-preset-btn col-span-2 bg-slate-800 border border-slate-700 hover:border-brand-accent text-slate-200 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition">
+                            <i class="fa-solid fa-clock text-slate-400"></i>
+                            <span>Custom:</span>
+                            <input type="number" id="customMinsInput" min="1" max="60" value="15" class="w-12 bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 text-center text-xs font-mono text-white focus:outline-none" onclick="event.stopPropagation()">
+                            <span class="text-[10px] text-slate-400">Mins</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Type Selection -->
+                <div>
+                    <label for="onboardingClaimTypeSelect" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Target Claim Category:
+                    </label>
+                    <select id="onboardingClaimTypeSelect" class="w-full bg-slate-950 border border-slate-700 focus:border-brand-accent text-white font-medium text-sm rounded-xl px-3 py-2.5 focus:outline-none">
+                        <option value="all">All Forms (CMS-1500, UB-04, Dental)</option>
+                        <option value="hcfa">CMS-1500 (HCFA) Professional Claims</option>
+                        <option value="ub04">UB-04 Institutional Inpatient/Outpatient</option>
+                        <option value="ada">ADA Dental Claim Forms</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button id="startSessionBtn" class="w-full bg-gradient-to-r from-brand-600 to-brand-accent hover:from-brand-700 hover:to-brand-600 text-white font-bold py-3 rounded-xl text-sm shadow-xl flex items-center justify-center gap-2 btn-hover-effect">
+                    <i class="fa-solid fa-play"></i> Start Practice Session
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION RESULTS REPORT CARD MODAL WITH MISTAKES REVIEW TABLE -->
+    <div id="resultsModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full p-6 md:p-8 shadow-2xl relative flex flex-col max-h-[90vh]">
+            <div class="text-center border-b border-slate-800 pb-4 mb-4">
+                <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-2xl text-2xl mb-2">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Session Complete!</h2>
+                <p class="text-xs text-slate-400">Performance report for <span id="summaryOperatorName" class="text-slate-200 font-bold">Operator</span></p>
+            </div>
+
+            <!-- Scorecard Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Final Accuracy</span>
+                    <span id="summaryAccuracy" class="text-2xl font-mono font-bold text-emerald-400">0.0%</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Speed (KPH)</span>
+                    <span id="summaryKph" class="text-2xl font-mono font-bold text-brand-accent">0</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Rate (CPM)</span>
+                    <span id="summaryCpm" class="text-xl font-mono font-bold text-slate-200">0</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Total Processed</span>
+                    <span id="summaryProcessed" class="text-xl font-mono font-bold text-slate-200">0 Fields</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Matched / Errors</span>
+                    <span id="summaryMatchBreakdown" class="text-sm font-mono font-bold text-slate-300 mt-1">0 / 0</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Max Streak</span>
+                    <span id="summaryMaxStreak" class="text-xl font-mono font-bold text-amber-400">0 🔥</span>
+                </div>
+            </div>
+
+            <!-- END OF SESSION ERROR & MISTAKES REVIEW TABLE -->
+            <div class="flex-1 overflow-hidden flex flex-col mb-4 border border-slate-800 bg-slate-950/60 rounded-xl p-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-circle-xmark"></i> Session Mistakes & Error Review
+                </h3>
+                <div class="overflow-y-auto flex-1 pr-1" id="sessionMistakesContainer">
+                    <!-- Populated dynamically at the end of session -->
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button id="closeSummaryBtn" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg btn-hover-effect">
+                    Configure New Session
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLAIM FORM CONTEXT MODAL -->
+    <div id="contextModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
+            <button id="closeContextModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                <i class="fa-solid fa-file-invoice text-brand-accent"></i> Claim Document Context Preview
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Location of the current cropped snippet on the standardized claim form.</p>
+            
+            <div class="flex-1 overflow-auto border border-slate-700 rounded-xl bg-slate-950 p-4 flex justify-center">
+                <div id="mockDocumentPage" class="bg-white text-slate-900 w-[450px] min-h-[580px] p-6 text-[10px] font-serif shadow-2xl relative select-none rounded">
+                </div>
+            </div>
+            
+            <div class="mt-4 flex justify-end">
+                <button id="closeContextModalBottomBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-lg text-xs font-semibold">Close Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHEAT SHEET MODAL -->
+    <div id="cheatSheetModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative flex flex-col max-h-[85vh]">
+            <button id="closeCheatSheetBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                <i class="fa-solid fa-book-open text-amber-400"></i> Healthcare Data Entry ICR Rules
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Standard guidelines for medical/dental claim code entry.</p>
+            
+            <div class="overflow-y-auto space-y-3 pr-2 text-xs text-slate-300">
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 1: Amount Fields</h4>
+                    <p>Do NOT key dollar sign (<code>$</code>) or commas. Enter plain digits e.g. Image <code>$1,250.00</code> &rarr; Key <code>1250.00</code>.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 2: Date Fields</h4>
+                    <p>Do NOT key slashes (<code>/</code>). Enter contiguous MMDDYYYY digits e.g. Image <code>09/28/2026</code> &rarr; Key <code>09282026</code>.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 3: Tooth Surface</h4>
+                    <p>MUST add commas between surface letters e.g. Image <code>MOD</code> &rarr; Key <code>M,O,D</code>.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 4: ICD-10 Diagnosis Format</h4>
+                    <p>Do NOT key decimal dots (<code>.</code>) in ICD-10 codes e.g. Image <code>M54.50</code> &rarr; Key <code>M5450</code>.</p>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button id="closeCheatSheetBottomBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-lg text-xs font-semibold">Understood</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // EXPANDED DATASET POOLS WITH REVISED BUSINESS RULES
+        const DATA_POOLS = {
+            cptCodes: [
+                "99213", "99214", "99215", "99203", "99204", "99283", "99284", "99285", "36415", "80053", 
+                "85025", "80048", "71046", "73721", "93000", "99214-25", "99213-25", "71045-TC", "29881", "43239",
+                "J0135", "J1745", "J3301", "G0438", "A0425", "A0427", "Q9967", "J9035", "J0897", "99395"
+            ],
+            // ICD-10 DX Codes (Rule: Displayed with dots in image, Expected without dots)
+            icd10Codes: [
+                { display: "M54.50", expected: "M5450" },
+                { display: "E11.9", expected: "E119" },
+                { display: "I10", expected: "I10" },
+                { display: "J20.9", expected: "J209" },
+                { display: "K21.9", expected: "K219" },
+                { display: "M79.7", expected: "M797" },
+                { display: "R07.9", expected: "R079" },
+                { display: "Z00.00", expected: "Z0000" },
+                { display: "G43.909", expected: "G43909" },
+                { display: "F41.1", expected: "F411" }
+            ],
+            cdtDentalCodes: [
+                "D0120", "D0140", "D0150", "D0210", "D0220", "D0274", "D1110", "D1120", "D1206", "D1351",
+                "D2140", "D2330", "D2391", "D2392", "D2740", "D2750", "D3310", "D4341", "D7140", "D7210"
+            ],
+            revenueCodes: [
+                "0250", "0270", "0300", "0301", "0310", "0320", "0450", "0510", "0636", "0761", "0120", "0111"
+            ],
+            typeOfBill: [
+                "0111", "0121", "0131", "0141", "0211", "0322", "0721", "0831", "0851"
+            ],
+            // Tooth Surface (Rule: Displayed as MOD, Expected as M,O,D)
+            toothNumSurfaces: [
+                { display: "14-MOD", expected: "14-M,O,D" },
+                { display: "30-O", expected: "30-O" },
+                { display: "19-MO", expected: "19-M,O" },
+                { display: "8-MI", expected: "8-M,I" },
+                { display: "3-DO", expected: "3-D,O" },
+                { display: "18-B", expected: "18-B" },
+                { display: "31-M", expected: "31-M" }
+            ],
+            patientNames: [
+                "Mendoza, Beatriz", "Gallagher, Deborah", "Robertson, Emanuel", "Sterling, Ignacio", 
+                "Dupont, Jacqueline", "Novak, Katarina", "MacLeod, Lachlan", "Petrov, Mikhail",
+                "Tremblay, Nicolette", "Benitez, Oswaldo", "Vance, Christopher", "Wright, Alexander"
+            ],
+            memberIDs: [
+                "HC-9821-0012", "UB-489120-X", "ADA-990123-9", "MEM-109283-A", "POL-8830192-0"
+            ],
+            npisAndTaxIDs: [
+                "1982019201", "1029384756", "1487654321", "1209384712", "1831102938"
+            ],
+            // Amounts (Rule: Displayed with $, Expected without $)
+            billedAmounts: [
+                { display: "$145.00", expected: "145.00" },
+                { display: "$380.50", expected: "380.50" },
+                { display: "$1,250.00", expected: "1250.00" },
+                { display: "$89.99", expected: "89.99" },
+                { display: "$4,500.00", expected: "4500.00" }
+            ],
+            // Dates (Rule: Displayed with /, Expected without /)
+            datesOfService: [
+                { display: "09/28/2026", expected: "09282026" },
+                { display: "04/12/2026", expected: "04122026" },
+                { display: "01/15/2026", expected: "01152026" },
+                { display: "11/02/2025", expected: "11022025" }
+            ]
+        };
+
+        // Form Templates Configuration
+        const CLAIM_TEMPLATES = [
+            { type: 'hcfa', badge: 'CMS-1500: BOX 24D (CPT/HCPCS)', poolKey: 'cptCodes', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 24D - CPT/HCPCS Procedure Code', ruleHint: 'Rule: Standard CPT Code Entry' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 21 (ICD-10 DX)', poolKey: 'icd10Codes', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 21 - Diagnosis Code (ICD-10)', ruleHint: 'Rule: NO dots (.) in Diagnosis Codes' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 1A (INSURED ID)', poolKey: 'memberIDs', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 1a - Insured ID Number', ruleHint: 'Rule: Key exact Insured ID' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 2 (PATIENT NAME)', poolKey: 'patientNames', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 2 - Patient Last Name, First Name', ruleHint: 'Rule: Key exact Patient Name' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 24F (CHARGES)', poolKey: 'billedAmounts', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 24F - Billed Line Charges', ruleHint: 'Rule: NO $ or commas in Amount fields' },
+
+            { type: 'ub04', badge: 'UB-04: FL 42 (REVENUE CODE)', poolKey: 'revenueCodes', boxColor: 'rgba(16, 185, 129, 0.22)', labelColor: '#065f46', title: 'Form Locator 42 - Revenue Code', ruleHint: 'Rule: Standard 4-digit Revenue Code' },
+            { type: 'ub04', badge: 'UB-04: FL 04 (TYPE OF BILL)', poolKey: 'typeOfBill', boxColor: 'rgba(16, 185, 129, 0.22)', labelColor: '#065f46', title: 'Form Locator 4 - Type of Bill', ruleHint: 'Rule: Standard 4-digit Type of Bill' },
+            { type: 'ub04', badge: 'UB-04: FL 47 (TOTAL CHARGES)', poolKey: 'billedAmounts', boxColor: 'rgba(16, 185, 129, 0.22)', labelColor: '#065f46', title: 'Form Locator 47 - Total Charges', ruleHint: 'Rule: NO $ or commas in Amount fields' },
+
+            { type: 'ada', badge: 'ADA DENTAL: BOX 29 (CDT CODE)', poolKey: 'cdtDentalCodes', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 29 - Procedure Code (CDT)', ruleHint: 'Rule: Standard 5-char CDT Code' },
+            { type: 'ada', badge: 'ADA DENTAL: BOX 27 (TOOTH / SURF)', poolKey: 'toothNumSurfaces', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 27 - Tooth Number / Surface', ruleHint: 'Rule: MUST add commas (,) in tooth surface' },
+            { type: 'ada', badge: 'ADA DENTAL: BOX 31 (FEE AMOUNT)', poolKey: 'billedAmounts', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 31 - Fee Amount', ruleHint: 'Rule: NO $ or commas in Fee fields' },
+
+            { type: 'general', badge: 'GENERAL: SERVICE DATE', poolKey: 'datesOfService', boxColor: 'rgba(100, 116, 139, 0.22)', labelColor: '#334155', title: 'Service Date / Receipt Date', ruleHint: 'Rule: NO slashes (/) in Date fields' }
+        ];
+
+        // Global State Engine
+        const state = {
+            operatorName: 'Operator 1',
+            sessionDurationMins: 3,
+            sessionTimeRemainingSec: 180,
+            isSessionActive: false,
+            countdownTimerInterval: null,
+            currentFormFilter: 'all',
+            currentChallenge: null,
+            zoomLevel: 1.0,
+            brightness: 100,
+            contrast: 100,
+            isInverted: false,
+            isGrayscale: false,
+            startTime: null,
+            sampleIndex: 1,
+            sessionStats: {
+                total: 0,
+                passed: 0,
+                failed: 0,
+                flagged: 0,
+                totalCharsTyped: 0,
+                totalTimeSec: 0,
+                streak: 0,
+                maxStreak: 0
+            },
+            history: []
+        };
+
+        const DOM = {
+            onboardingModal: document.getElementById('onboardingModal'),
+            operatorNameInput: document.getElementById('operatorNameInput'),
+            timePresetGroup: document.getElementById('timePresetGroup'),
+            customMinsInput: document.getElementById('customMinsInput'),
+            onboardingClaimTypeSelect: document.getElementById('onboardingClaimTypeSelect'),
+            startSessionBtn: document.getElementById('startSessionBtn'),
+            headerOperatorDisplay: document.getElementById('headerOperatorDisplay'),
+            headerDurationDisplay: document.getElementById('headerDurationDisplay'),
+            restartSessionSetupBtn: document.getElementById('restartSessionSetupBtn'),
+            countdownDisplay: document.getElementById('countdownDisplay'),
+            claimTypeSelect: document.getElementById('claimTypeSelect'),
+            fieldTypeBadge: document.getElementById('fieldTypeBadge'),
+            samplePoolCount: document.getElementById('samplePoolCount'),
+            canvasWrapper: document.getElementById('canvasWrapper'),
+            canvas: document.getElementById('snippetCanvas'),
+            zoomInBtn: document.getElementById('zoomInBtn'),
+            zoomOutBtn: document.getElementById('zoomOutBtn'),
+            zoomLevelDisplay: document.getElementById('zoomLevelDisplay'),
+            invertBtn: document.getElementById('invertBtn'),
+            grayscaleBtn: document.getElementById('grayscaleBtn'),
+            resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+            brightnessSlider: document.getElementById('brightnessSlider'),
+            contrastSlider: document.getElementById('contrastSlider'),
+            transcriptionInput: document.getElementById('transcriptionInput'),
+            liveRuleHint: document.getElementById('liveRuleHint'),
+            submitBtn: document.getElementById('submitBtn'),
+            flagIllegibleBtn: document.getElementById('flagIllegibleBtn'),
+            skipBtn: document.getElementById('skipBtn'),
+            resultFeedbackPanel: document.getElementById('resultFeedbackPanel'),
+            feedbackIconContainer: document.getElementById('feedbackIconContainer'),
+            feedbackTitle: document.getElementById('feedbackTitle'),
+            feedbackSubtitle: document.getElementById('feedbackSubtitle'),
+            accuracyDeltaBadge: document.getElementById('accuracyDeltaBadge'),
+            expectedTextDisplay: document.getElementById('expectedTextDisplay'),
+            enteredTextDisplay: document.getElementById('enteredTextDisplay'),
+            diffDisplay: document.getElementById('diffDisplay'),
+            accuracyMetric: document.getElementById('accuracyMetric'),
+            kphMetric: document.getElementById('kphMetric'),
+            cpmMetric: document.getElementById('cpmMetric'),
+            wpmMetric: document.getElementById('wpmMetric'),
+            streakMetric: document.getElementById('streakMetric'),
+            completedCount: document.getElementById('completedCount'),
+            sessionProgressBar: document.getElementById('sessionProgressBar'),
+            passCount: document.getElementById('passCount'),
+            errorCount: document.getElementById('errorCount'),
+            flagCount: document.getElementById('flagCount'),
+            historyListContainer: document.getElementById('historyListContainer'),
+            clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+            viewFullContextBtn: document.getElementById('viewFullContextBtn'),
+            contextModal: document.getElementById('contextModal'),
+            closeContextModalBtn: document.getElementById('closeContextModalBtn'),
+            closeContextModalBottomBtn: document.getElementById('closeContextModalBottomBtn'),
+            mockDocumentPage: document.getElementById('mockDocumentPage'),
+            cheatSheetBtn: document.getElementById('cheatSheetBtn'),
+            cheatSheetModal: document.getElementById('cheatSheetModal'),
+            closeCheatSheetBtn: document.getElementById('closeCheatSheetBtn'),
+            closeCheatSheetBottomBtn: document.getElementById('closeCheatSheetBottomBtn'),
+            resultsModal: document.getElementById('resultsModal'),
+            summaryOperatorName: document.getElementById('summaryOperatorName'),
+            summaryAccuracy: document.getElementById('summaryAccuracy'),
+            summaryKph: document.getElementById('summaryKph'),
+            summaryCpm: document.getElementById('summaryCpm'),
+            summaryProcessed: document.getElementById('summaryProcessed'),
+            summaryMatchBreakdown: document.getElementById('summaryMatchBreakdown'),
+            summaryMaxStreak: document.getElementById('summaryMaxStreak'),
+            sessionMistakesContainer: document.getElementById('sessionMistakesContainer'),
+            closeSummaryBtn: document.getElementById('closeSummaryBtn')
+        };
+
+        function generateProceduralSnippet() {
+            const ctx = DOM.canvas.getContext('2d');
+            const width = DOM.canvas.width;
+            const height = DOM.canvas.height;
+
+            let availableTemplates = CLAIM_TEMPLATES;
+            if (state.currentFormFilter !== 'all') {
+                availableTemplates = CLAIM_TEMPLATES.filter(t => t.type === state.currentFormFilter);
+            }
+
+            const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
+            const pool = DATA_POOLS[template.poolKey];
+            const poolItem = pool[Math.floor(Math.random() * pool.length)];
+
+            let displayText = "";
+            let expectedText = "";
+
+            if (typeof poolItem === 'object') {
+                displayText = poolItem.display;
+                expectedText = poolItem.expected;
+            } else {
+                displayText = poolItem;
+                expectedText = poolItem;
+            }
+
+            const styleType = Math.random() > 0.35 ? 'handwritten' : 'printed';
+
+            state.currentChallenge = {
+                displayText: displayText,
+                expectedText: expectedText,
+                template: template,
+                styleType: styleType
+            };
+
+            // Update Field Badges & Rule Hints
+            DOM.fieldTypeBadge.textContent = template.badge;
+            DOM.liveRuleHint.textContent = template.ruleHint;
+            state.sampleIndex = (state.sampleIndex % 520) + 1;
+            DOM.samplePoolCount.textContent = `Sample ${state.sampleIndex} of 500+ Dynamic Pool`;
+
+            // Canvas Background
+            ctx.filter = 'none';
+            ctx.fillStyle = styleType === 'printed' ? '#f8fafc' : '#fffdf5';
+            ctx.fillRect(0, 0, width, height);
+
+            // Paper Noise
+            for (let i = 0; i < width * height * 0.025; i++) {
+                ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.035})`;
+                ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+            }
+
+            // Draw Form Box
+            ctx.fillStyle = template.boxColor;
+            ctx.fillRect(15, 15, width - 30, height - 30);
+            ctx.strokeStyle = template.labelColor;
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(15, 15, width - 30, height - 30);
+
+            // Form Title Header Line
+            ctx.fillStyle = template.labelColor;
+            ctx.font = 'bold 10px Inter, sans-serif';
+            ctx.fillText(template.title.toUpperCase(), 22, 28);
+
+            // Form Grid Line
+            ctx.beginPath();
+            ctx.setLineDash([3, 3]);
+            ctx.moveTo(25, height - 35);
+            ctx.lineTo(width - 25, height - 35);
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.5)';
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Render Text Characters
+            ctx.save();
+            const tiltAngle = (Math.random() - 0.5) * 0.04;
+            ctx.translate(width / 2, height / 2 + 5);
+            ctx.rotate(tiltAngle);
+
+            let fontName = 'Caveat';
+            let fontSize = 42;
+
+            if (styleType === 'handwritten') {
+                const fonts = ['Caveat', 'Dancing Script', 'Nanum Pen Script', 'Permanent Marker', 'Shadows Into Light'];
+                fontName = fonts[Math.floor(Math.random() * fonts.length)];
+                fontSize = fontName === 'Nanum Pen Script' ? 52 : 40;
+                ctx.fillStyle = Math.random() > 0.5 ? '#1e3a8a' : '#0f172a';
+            } else {
+                fontName = Math.random() > 0.5 ? 'Courier Prime' : 'Special Elite';
+                fontSize = 34;
+                ctx.fillStyle = '#171717';
+            }
+
+            ctx.font = `${fontSize}px "${fontName}", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(displayText, 0, 0);
+            ctx.restore();
+
+            // Reset Input Box
+            DOM.transcriptionInput.value = '';
+            DOM.transcriptionInput.focus();
+            DOM.resultFeedbackPanel.classList.add('hidden');
+
+            state.startTime = Date.now();
+        }
+
+        function applyImageFilters() {
+            DOM.canvasWrapper.style.transform = `scale(${state.zoomLevel})`;
+            DOM.zoomLevelDisplay.textContent = `${Math.round(state.zoomLevel * 100)}%`;
+
+            let filterString = `brightness(${state.brightness}%) contrast(${state.contrast}%)`;
+            if (state.isInverted) filterString += ' invert(100%)';
+            if (state.isGrayscale) filterString += ' grayscale(100%) contrast(300%)';
+
+            DOM.canvas.style.filter = filterString;
+        }
+
+        function resetFilters() {
+            state.zoomLevel = 1.0;
+            state.brightness = 100;
+            state.contrast = 100;
+            state.isInverted = false;
+            state.isGrayscale = false;
+            DOM.brightnessSlider.value = 100;
+            DOM.contrastSlider.value = 100;
+            applyImageFilters();
+        }
+
+        function startSessionCountdown() {
+            if (state.countdownTimerInterval) clearInterval(state.countdownTimerInterval);
+            state.isSessionActive = true;
+            state.sessionTimeRemainingSec = state.sessionDurationMins * 60;
+            updateCountdownDisplay();
+
+            state.countdownTimerInterval = setInterval(() => {
+                if (!state.isSessionActive) return;
+                state.sessionTimeRemainingSec--;
+                updateCountdownDisplay();
+
+                if (state.sessionTimeRemainingSec <= 0) {
+                    endPracticeSession();
+                }
+            }, 1000);
+        }
+
+        function updateCountdownDisplay() {
+            const mins = Math.floor(state.sessionTimeRemainingSec / 60);
+            const secs = state.sessionTimeRemainingSec % 60;
+            DOM.countdownDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function endPracticeSession() {
+            clearInterval(state.countdownTimerInterval);
+            state.isSessionActive = false;
+
+            const totalMins = state.sessionDurationMins;
+            const cpm = totalMins > 0 ? Math.round(state.sessionStats.totalCharsTyped / totalMins) : 0;
+            const kph = Math.round(cpm * 60);
+            const accuracy = state.sessionStats.total > 0 
+                ? ((state.sessionStats.passed / state.sessionStats.total) * 100).toFixed(1) 
+                : '100.0';
+
+            // Populate Summary Modal
+            DOM.summaryOperatorName.textContent = state.operatorName;
+            DOM.summaryAccuracy.textContent = `${accuracy}%`;
+            DOM.summaryKph.textContent = kph.toLocaleString();
+            DOM.summaryCpm.textContent = cpm;
+            DOM.summaryProcessed.textContent = `${state.sessionStats.total} Fields`;
+            DOM.summaryMatchBreakdown.textContent = `${state.sessionStats.passed} / ${state.sessionStats.failed}`;
+            DOM.summaryMaxStreak.textContent = `${state.sessionStats.maxStreak} 🔥`;
+
+            // POPULATE MISTAKES TABLE AT END OF SESSION
+            renderSessionMistakesTable();
+
+            DOM.resultsModal.classList.remove('hidden');
+        }
+
+        function renderSessionMistakesTable() {
+            const mistakes = state.history.filter(h => h.status === 'failed' || h.status === 'flagged');
+            
+            if (mistakes.length === 0) {
+                DOM.sessionMistakesContainer.innerHTML = `
+                    <div class="text-center py-6 text-emerald-400 font-semibold text-xs flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-2xl"></i>
+                        <span>Flawless Session! Zero Mistakes Made.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="w-full text-left text-xs font-mono">
+                    <thead class="bg-slate-900 text-slate-400 uppercase text-[10px] sticky top-0 border-b border-slate-800">
+                        <tr>
+                            <th class="p-2">Field Label</th>
+                            <th class="p-2">Entered Answer</th>
+                            <th class="p-2">Expected Correct</th>
+                            <th class="p-2">Diff Comparison</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60">
+            `;
+
+            mistakes.forEach(item => {
+                html += `
+                    <tr class="hover:bg-slate-900/50">
+                        <td class="p-2 text-slate-300 font-sans font-medium text-[11px]">${escapeHtml(item.fieldLabel)}</td>
+                        <td class="p-2 text-rose-400 font-bold">${escapeHtml(item.entered)}</td>
+                        <td class="p-2 text-emerald-400 font-bold">${escapeHtml(item.expected)}</td>
+                        <td class="p-2 text-[11px]">${computeDiffHtml(item.expected, item.entered)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            DOM.sessionMistakesContainer.innerHTML = html;
+        }
+
+        function computeDiffHtml(expected, entered) {
+            if (expected === entered) return `<span class="text-emerald-400 font-bold">100% Match</span>`;
+
+            let html = '';
+            const maxLen = Math.max(expected.length, entered.length);
+
+            for (let i = 0; i < maxLen; i++) {
+                const expChar = expected[i] || '';
+                const entChar = entered[i] || '';
+
+                if (expChar === entChar) {
+                    html += `<span class="text-emerald-400">${expChar}</span>`;
+                } else if (!entChar) {
+                    html += `<span class="diff-del">${expChar}</span>`;
+                } else if (!expChar) {
+                    html += `<span class="diff-add">${entChar}</span>`;
+                } else {
+                    html += `<span class="diff-sub">${entChar}</span>`;
+                }
+            }
+            return html;
+        }
+
+        function submitAnswer(isFlaggedIllegible = false) {
+            if (!state.isSessionActive) return;
+
+            const duration = (Date.now() - state.startTime) / 1000;
+            const enteredText = DOM.transcriptionInput.value.trim();
+            const expectedText = state.currentChallenge.expectedText;
+
+            const isCorrect = isFlaggedIllegible ? false : (enteredText === expectedText);
+            const status = isCorrect ? 'passed' : (isFlaggedIllegible ? 'flagged' : 'failed');
+
+            // Stats Update
+            state.sessionStats.total++;
+            state.sessionStats.totalTimeSec += duration;
+            state.sessionStats.totalCharsTyped += enteredText.length;
+
+            if (isCorrect) {
+                state.sessionStats.passed++;
+                state.sessionStats.streak++;
+                if (state.sessionStats.streak > state.sessionStats.maxStreak) {
+                    state.sessionStats.maxStreak = state.sessionStats.streak;
+                }
+            } else if (status === 'flagged') {
+                state.sessionStats.flagged++;
+                state.sessionStats.streak = 0;
+            } else {
+                state.sessionStats.failed++;
+                state.sessionStats.streak = 0;
+            }
+
+            const elapsedMins = (state.sessionDurationMins * 60 - state.sessionTimeRemainingSec) / 60;
+            const activeMins = elapsedMins > 0 ? elapsedMins : (1 / 60);
+            const cpm = Math.round(state.sessionStats.totalCharsTyped / activeMins);
+            const kph = Math.round(cpm * 60);
+            const wpm = Math.round(cpm / 5);
+            const accuracy = ((state.sessionStats.passed / state.sessionStats.total) * 100).toFixed(1);
+
+            // Dashboard Metrics UI
+            DOM.accuracyMetric.textContent = `${accuracy}%`;
+            DOM.kphMetric.textContent = kph.toLocaleString();
+            DOM.cpmMetric.textContent = cpm;
+            DOM.wpmMetric.textContent = `~${wpm} WPM`;
+            DOM.streakMetric.textContent = `${state.sessionStats.streak} 🔥`;
+
+            DOM.completedCount.textContent = `${state.sessionStats.total} Fields`;
+            DOM.passCount.textContent = state.sessionStats.passed;
+            DOM.errorCount.textContent = state.sessionStats.failed;
+            DOM.flagCount.textContent = state.sessionStats.flagged;
+
+            const progressPct = Math.min(100, (state.sessionStats.total / 30) * 100);
+            DOM.sessionProgressBar.style.width = `${progressPct}%`;
+
+            // Display Instant Feedback Box
+            DOM.resultFeedbackPanel.classList.remove('hidden');
+            if (isCorrect) {
+                DOM.resultFeedbackPanel.className = 'bg-slate-800 border-2 border-emerald-500/50 rounded-xl p-4 shadow-xl';
+                DOM.feedbackIconContainer.className = 'p-2.5 rounded-lg text-xl bg-emerald-500/20 text-emerald-400';
+                DOM.feedbackIconContainer.innerHTML = '<i class="fa-solid fa-check"></i>';
+                DOM.feedbackTitle.textContent = 'Perfect Verification!';
+                DOM.feedbackSubtitle.textContent = `Completed in ${duration.toFixed(1)}s (${cpm} CPM)`;
+                DOM.accuracyDeltaBadge.className = 'text-xs font-mono font-bold px-2 py-1 rounded bg-emerald-900/40 text-emerald-300';
+                DOM.accuracyDeltaBadge.textContent = '100% MATCH';
+            } else {
+                DOM.resultFeedbackPanel.className = 'bg-slate-800 border-2 border-rose-500/50 rounded-xl p-4 shadow-xl';
+                DOM.feedbackIconContainer.className = 'p-2.5 rounded-lg text-xl bg-rose-500/20 text-rose-400';
+                DOM.feedbackIconContainer.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                DOM.feedbackTitle.textContent = isFlaggedIllegible ? 'Flagged as Illegible' : 'Character Mismatch';
+                DOM.feedbackSubtitle.textContent = `Review expected vs entered characters below.`;
+                DOM.accuracyDeltaBadge.className = 'text-xs font-mono font-bold px-2 py-1 rounded bg-rose-900/40 text-rose-300';
+                DOM.accuracyDeltaBadge.textContent = isFlaggedIllegible ? 'FLAGGED' : 'MISMATCH';
+            }
+
+            DOM.expectedTextDisplay.textContent = expectedText;
+            DOM.enteredTextDisplay.textContent = isFlaggedIllegible ? '[FLAGGED ILLEGIBLE]' : (enteredText || '[EMPTY]');
+            DOM.diffDisplay.innerHTML = computeDiffHtml(expectedText, enteredText);
+
+            // History Entry
+            addHistoryRecord({
+                id: Date.now(),
+                fieldLabel: state.currentChallenge.template.title,
+                expected: expectedText,
+                entered: isFlaggedIllegible ? '[FLAGGED]' : (enteredText || '[EMPTY]'),
+                status: status,
+                duration: duration
+            });
+
+            // Auto advance
+            setTimeout(() => {
+                if (state.isSessionActive) generateProceduralSnippet();
+            }, isCorrect ? 700 : 1800);
+        }
+
+        function addHistoryRecord(record) {
+            state.history.unshift(record);
+            if (state.history.length === 1) DOM.historyListContainer.innerHTML = '';
+
+            const itemEl = document.createElement('div');
+            itemEl.className = 'bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs flex items-center justify-between gap-2 shadow-sm';
+
+            let statusBadge = '';
+            if (record.status === 'passed') {
+                statusBadge = '<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Pass</span>';
+            } else if (record.status === 'flagged') {
+                statusBadge = '<span class="text-amber-400 font-bold"><i class="fa-solid fa-flag"></i> Flag</span>';
+            } else {
+                statusBadge = '<span class="text-rose-400 font-bold"><i class="fa-solid fa-circle-xmark"></i> Error</span>';
+            }
+
+            itemEl.innerHTML = `
+                <div class="flex flex-col min-w-0">
+                    <div class="font-mono text-slate-200 truncate font-semibold">${escapeHtml(record.expected)}</div>
+                    <div class="text-[10px] text-slate-500 font-mono">Entry: "${escapeHtml(record.entered)}"</div>
+                </div>
+                <div class="flex items-center space-x-2 shrink-0 text-right">
+                    <div class="flex flex-col items-end">
+                        ${statusBadge}
+                        <span class="text-[10px] text-slate-500 font-mono">${record.duration.toFixed(1)}s</span>
+                    </div>
+                </div>
+            `;
+
+            DOM.historyListContainer.prepend(itemEl);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function renderMockDocumentPage() {
+            DOM.mockDocumentPage.innerHTML = `
+                <div class="border-b-2 border-slate-900 pb-2 mb-3 flex justify-between items-end">
+                    <div>
+                        <h2 class="font-bold text-sm tracking-wider uppercase">HEALTH INSURANCE CLAIM FORM</h2>
+                        <p class="text-[8px] text-slate-600">APPROVED BY NATIONAL UNIFORM CLAIM COMMITTEE (NUCC)</p>
+                    </div>
+                    <span class="font-mono text-[8px] border border-slate-900 px-1 py-0.5">CMS-1500</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-3 text-[9px]">
+                    <div class="border p-1.5">
+                        <span class="block font-bold text-slate-500 uppercase text-[8px]">1. INSURED'S I.D. NUMBER</span>
+                        <p class="mt-0.5"><span class="underline">HC-9821-0012</span></p>
+                    </div>
+                    <div class="border p-1.5">
+                        <span class="block font-bold text-slate-500 uppercase text-[8px]">2. PATIENT'S NAME</span>
+                        <p class="mt-0.5"><span class="underline">Mendoza, Beatriz</span></p>
+                    </div>
+                </div>
+
+                <div class="border-2 border-dashed border-brand-600 bg-brand-50 p-2.5 rounded my-3 relative">
+                    <span class="absolute -top-2 left-2 bg-brand-600 text-white text-[8px] px-1 font-sans rounded">ACTIVE SNIPPET LOCATION</span>
+                    <p class="font-mono text-xs font-bold text-slate-800 text-center py-2">${state.currentChallenge ? state.currentChallenge.displayText : 'SAMPLE'}</p>
+                </div>
+
+                <div class="space-y-1.5 opacity-50 text-[8px] mt-4">
+                    <div class="h-2 bg-slate-200 rounded w-full"></div>
+                    <div class="h-2 bg-slate-200 rounded w-5/6"></div>
+                    <div class="h-2 bg-slate-200 rounded w-4/6"></div>
+                </div>
+            `;
+        }
+
+        function initEventListeners() {
+            const presetBtns = DOM.timePresetGroup.querySelectorAll('.time-preset-btn');
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    presetBtns.forEach(b => {
+                        b.classList.remove('border-2', 'border-brand-accent');
+                        b.classList.add('border', 'border-slate-700');
+                        const title = b.querySelector('span');
+                        if (title) title.classList.remove('text-brand-accent');
+                    });
+
+                    btn.classList.remove('border', 'border-slate-700');
+                    btn.classList.add('border-2', 'border-brand-accent');
+                    const title = btn.querySelector('span');
+                    if (title) title.classList.add('text-brand-accent');
+
+                    const minsVal = btn.getAttribute('data-mins');
+                    if (minsVal === 'custom') {
+                        state.sessionDurationMins = parseInt(DOM.customMinsInput.value) || 5;
+                    } else {
+                        state.sessionDurationMins = parseInt(minsVal);
+                    }
+                });
+            });
+
+            DOM.customMinsInput.addEventListener('input', (e) => {
+                state.sessionDurationMins = parseInt(e.target.value) || 1;
+            });
+
+            DOM.startSessionBtn.addEventListener('click', () => {
+                const name = DOM.operatorNameInput.value.trim();
+                state.operatorName = name || 'Operator 1';
+                state.currentFormFilter = DOM.onboardingClaimTypeSelect.value;
+                DOM.claimTypeSelect.value = state.currentFormFilter;
+
+                DOM.headerOperatorDisplay.textContent = state.operatorName;
+                DOM.headerDurationDisplay.textContent = `${state.sessionDurationMins} Mins`;
+
+                state.sessionStats = {
+                    total: 0,
+                    passed: 0,
+                    failed: 0,
+                    flagged: 0,
+                    totalCharsTyped: 0,
+                    totalTimeSec: 0,
+                    streak: 0,
+                    maxStreak: 0
+                };
+                state.history = [];
+                DOM.historyListContainer.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 italic">No entries logged yet.</div>';
+
+                DOM.onboardingModal.classList.add('hidden');
+                startSessionCountdown();
+                generateProceduralSnippet();
+            });
+
+            DOM.restartSessionSetupBtn.addEventListener('click', () => {
+                clearInterval(state.countdownTimerInterval);
+                state.isSessionActive = false;
+                DOM.onboardingModal.classList.remove('hidden');
+            });
+
+            DOM.closeSummaryBtn.addEventListener('click', () => {
+                DOM.resultsModal.classList.add('hidden');
+                DOM.onboardingModal.classList.remove('hidden');
+            });
+
+            DOM.claimTypeSelect.addEventListener('change', (e) => {
+                state.currentFormFilter = e.target.value;
+                if (state.isSessionActive) generateProceduralSnippet();
+            });
+
+            DOM.transcriptionInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitAnswer(false);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    submitAnswer(true);
+                }
+            });
+
+            DOM.submitBtn.addEventListener('click', () => submitAnswer(false));
+            DOM.flagIllegibleBtn.addEventListener('click', () => submitAnswer(true));
+            DOM.skipBtn.addEventListener('click', () => {
+                if (state.isSessionActive) generateProceduralSnippet();
+            });
+
+            DOM.zoomInBtn.addEventListener('click', () => {
+                if (state.zoomLevel < 2.5) { state.zoomLevel += 0.25; applyImageFilters(); }
+            });
+
+            DOM.zoomOutBtn.addEventListener('click', () => {
+                if (state.zoomLevel > 0.75) { state.zoomLevel -= 0.25; applyImageFilters(); }
+            });
+
+            DOM.invertBtn.addEventListener('click', () => {
+                state.isInverted = !state.isInverted;
+                applyImageFilters();
+            });
+
+            DOM.grayscaleBtn.addEventListener('click', () => {
+                state.isGrayscale = !state.isGrayscale;
+                applyImageFilters();
+            });
+
+            DOM.resetFiltersBtn.addEventListener('click', resetFilters);
+
+            DOM.brightnessSlider.addEventListener('input', (e) => {
+                state.brightness = e.target.value;
+                applyImageFilters();
+            });
+
+            DOM.contrastSlider.addEventListener('input', (e) => {
+                state.contrast = e.target.value;
+                applyImageFilters();
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.altKey && e.key.toLowerCase() === 'f') {
+                    e.preventDefault(); resetFilters();
+                } else if (e.altKey && e.key.toLowerCase() === 'i') {
+                    e.preventDefault(); submitAnswer(true);
+                }
+            });
+
+            DOM.viewFullContextBtn.addEventListener('click', () => {
+                renderMockDocumentPage();
+                DOM.contextModal.classList.remove('hidden');
+            });
+            DOM.closeContextModalBtn.addEventListener('click', () => DOM.contextModal.classList.add('hidden'));
+            DOM.closeContextModalBottomBtn.addEventListener('click', () => DOM.contextModal.classList.add('hidden'));
+
+            DOM.cheatSheetBtn.addEventListener('click', () => DOM.cheatSheetModal.classList.remove('hidden'));
+            DOM.closeCheatSheetBtn.addEventListener('click', () => DOM.cheatSheetModal.classList.add('hidden'));
+            DOM.closeCheatSheetBottomBtn.addEventListener('click', () => DOM.cheatSheetModal.classList.add('hidden'));
+
+            DOM.clearHistoryBtn.addEventListener('click', () => {
+                state.history = [];
+                DOM.historyListContainer.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 italic">No entries logged yet.</div>';
+            });
+        }
+
+        window.onload = function() {
+            initEventListeners();
+        };
+    </script>
+</body>
+</html>
