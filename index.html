@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EyeKey Pro (Rules Edition) - Claims ICR Data Entry Training Portal</title>
+    <title>EyeKey Pro - Claims ICR Instruction-Enabled Data Entry Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
@@ -77,11 +77,11 @@
             <!-- Brand Title & Active Operator Indicator -->
             <div class="flex items-center space-x-3">
                 <div class="bg-gradient-to-tr from-brand-700 to-brand-accent p-2.5 rounded-xl shadow-md text-white">
-                    <i class="fa-solid fa-eye text-xl"></i>
+                    <i class="fa-solid fa-keyboard text-xl"></i>
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight tracking-wide text-white flex items-center gap-2">
-                        EyeKey Practice <span class="text-xs bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-2 py-0.5 rounded-full font-mono font-medium">Enterprise v5.0</span>
+                        EyeKey Pro <span class="text-xs bg-brand-accent/20 text-brand-accent border border-brand-accent/30 px-2 py-0.5 rounded-full font-mono font-medium">Instruction Suite v1.0</span>
                     </h1>
                     <p class="text-xs text-slate-400">
                         Operator: <span id="headerOperatorDisplay" class="font-bold text-slate-200">Not Logged In</span> | 
@@ -192,17 +192,17 @@
                 <div class="relative">
                     <label for="transcriptionInput" class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider flex justify-between">
                         <span>Transcribe Field Snippet:</span>
-                        <span class="text-amber-400 font-mono text-[11px]" id="liveRuleHint">Rule: Follow active entry guidelines</span>
+                        <span class="text-amber-400 font-mono text-[11px]" id="liveRuleHint">Rule: CAPITAL LETTERS ONLY</span>
                     </label>
                     <input 
                         type="text" 
                         id="transcriptionInput" 
-                        placeholder="Key in exact characters from the claim snippet..."
+                        placeholder="Key in exact UPPERCASE characters from snippet..."
                         autocomplete="off" 
                         autocorrect="off"
-                        autocapitalize="off"
+                        autocapitalize="characters"
                         spellcheck="false"
-                        class="w-full bg-slate-950 border-2 border-slate-600 focus:border-brand-accent text-white font-mono text-lg md:text-xl rounded-xl px-4 py-3 focus:outline-none shadow-inner tracking-wider transition-colors placeholder:text-slate-600 placeholder:font-sans placeholder:text-sm"
+                        class="w-full bg-slate-950 border-2 border-slate-600 focus:border-brand-accent text-white font-mono text-lg md:text-xl rounded-xl px-4 py-3 focus:outline-none shadow-inner tracking-wider transition-colors placeholder:text-slate-600 placeholder:font-sans placeholder:text-sm uppercase"
                     >
                 </div>
 
@@ -240,7 +240,7 @@
                 <!-- Character Diff Comparison Box -->
                 <div id="comparisonBox" class="mt-3 bg-slate-950 rounded-lg p-3 border border-slate-700 text-xs font-mono space-y-1">
                     <div class="flex justify-between">
-                        <span class="text-slate-500">Expected:</span>
+                        <span class="text-slate-500">Expected (CAPITAL):</span>
                         <span id="expectedTextDisplay" class="text-emerald-400 font-bold"></span>
                     </div>
                     <div class="flex justify-between">
@@ -346,8 +346,8 @@
                     <i class="fa-solid fa-id-card-clip text-2xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-white leading-tight">EyeKey Pro (Rules Edition) Practice Setup</h2>
-                    <p class="text-xs text-slate-400">Healthcare ICR & Data Entry Speed Benchmarking</p>
+                    <h2 class="text-xl font-bold text-white leading-tight">EyeKey Pro (Rules Edition)</h2>
+                    <p class="text-xs text-slate-400">Instruction-Enabled Claims ICR Benchmarking</p>
                 </div>
             </div>
 
@@ -507,20 +507,24 @@
             
             <div class="overflow-y-auto space-y-3 pr-2 text-xs text-slate-300">
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
-                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 1: Amount Fields</h4>
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 1: CAPITAL LETTERS ONLY</h4>
+                    <p>All alphabetic letters MUST be keyed in CAPITAL LETTERS, even if the image displays lowercase or mixed script.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 2: Amount Fields</h4>
                     <p>Do NOT key dollar sign (<code>$</code>) or commas. Enter plain digits e.g. Image <code>$1,250.00</code> &rarr; Key <code>1250.00</code>.</p>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
-                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 2: Date Fields</h4>
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 3: Date Fields</h4>
                     <p>Do NOT key slashes (<code>/</code>). Enter contiguous MMDDYYYY digits e.g. Image <code>09/28/2026</code> &rarr; Key <code>09282026</code>.</p>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
-                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 3: Tooth Surface</h4>
-                    <p>MUST add commas between surface letters e.g. Image <code>MOD</code> &rarr; Key <code>M,O,D</code>.</p>
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 4: Tooth Surface</h4>
+                    <p>MUST add commas between surface letters e.g. Image <code>mod</code> &rarr; Key <code>M,O,D</code>.</p>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
-                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 4: ICD-10 Diagnosis Format</h4>
-                    <p>Do NOT key decimal dots (<code>.</code>) in ICD-10 codes e.g. Image <code>M54.50</code> &rarr; Key <code>M5450</code>.</p>
+                    <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 5: ICD-10 Diagnosis Format</h4>
+                    <p>Do NOT key decimal dots (<code>.</code>) in ICD-10 codes e.g. Image <code>m54.50</code> &rarr; Key <code>M5450</code>.</p>
                 </div>
             </div>
 
@@ -531,29 +535,29 @@
     </div>
 
     <script>
-        // EXPANDED DATASET POOLS WITH REVISED BUSINESS RULES
+        // EXPANDED DATASET POOLS WITH REVISED BUSINESS RULES & CAPITALIZATION ENFORCEMENT
         const DATA_POOLS = {
             cptCodes: [
                 "99213", "99214", "99215", "99203", "99204", "99283", "99284", "99285", "36415", "80053", 
                 "85025", "80048", "71046", "73721", "93000", "99214-25", "99213-25", "71045-TC", "29881", "43239",
-                "J0135", "J1745", "J3301", "G0438", "A0425", "A0427", "Q9967", "J9035", "J0897", "99395"
+                "j0135", "J1745", "j3301", "G0438", "a0425", "A0427", "Q9967", "j9035", "J0897", "99395"
             ],
-            // ICD-10 DX Codes (Rule: Displayed with dots in image, Expected without dots)
+            // ICD-10 DX Codes (Rule: Displayed with dots/lowercase in image, Expected UPPERCASE without dots)
             icd10Codes: [
-                { display: "M54.50", expected: "M5450" },
-                { display: "E11.9", expected: "E119" },
-                { display: "I10", expected: "I10" },
-                { display: "J20.9", expected: "J209" },
-                { display: "K21.9", expected: "K219" },
-                { display: "M79.7", expected: "M797" },
-                { display: "R07.9", expected: "R079" },
-                { display: "Z00.00", expected: "Z0000" },
-                { display: "G43.909", expected: "G43909" },
-                { display: "F41.1", expected: "F411" }
+                { display: "m54.50", expected: "M5450" },
+                { display: "e11.9", expected: "E119" },
+                { display: "i10", expected: "I10" },
+                { display: "j20.9", expected: "J209" },
+                { display: "k21.9", expected: "K219" },
+                { display: "m79.7", expected: "M797" },
+                { display: "r07.9", expected: "R079" },
+                { display: "z00.00", expected: "Z0000" },
+                { display: "g43.909", expected: "G43909" },
+                { display: "f41.1", expected: "F411" }
             ],
             cdtDentalCodes: [
-                "D0120", "D0140", "D0150", "D0210", "D0220", "D0274", "D1110", "D1120", "D1206", "D1351",
-                "D2140", "D2330", "D2391", "D2392", "D2740", "D2750", "D3310", "D4341", "D7140", "D7210"
+                "d0120", "D0140", "d0150", "D0210", "d0220", "D0274", "d1110", "D1120", "d1206", "D1351",
+                "d2140", "D2330", "d2391", "D2392", "d2740", "D2750", "d3310", "D4341", "d7140", "D7210"
             ],
             revenueCodes: [
                 "0250", "0270", "0300", "0301", "0310", "0320", "0450", "0510", "0636", "0761", "0120", "0111"
@@ -561,23 +565,23 @@
             typeOfBill: [
                 "0111", "0121", "0131", "0141", "0211", "0322", "0721", "0831", "0851"
             ],
-            // Tooth Surface (Rule: Displayed as MOD, Expected as M,O,D)
+            // Tooth Surface (Rule: Displayed as mod/MOD, Expected as M,O,D UPPERCASE)
             toothNumSurfaces: [
-                { display: "14-MOD", expected: "14-M,O,D" },
-                { display: "30-O", expected: "30-O" },
-                { display: "19-MO", expected: "19-M,O" },
-                { display: "8-MI", expected: "8-M,I" },
-                { display: "3-DO", expected: "3-D,O" },
-                { display: "18-B", expected: "18-B" },
-                { display: "31-M", expected: "31-M" }
+                { display: "14-mod", expected: "14-M,O,D" },
+                { display: "30-o", expected: "30-O" },
+                { display: "19-mo", expected: "19-M,O" },
+                { display: "8-mi", expected: "8-M,I" },
+                { display: "3-do", expected: "3-D,O" },
+                { display: "18-b", expected: "18-B" },
+                { display: "31-m", expected: "31-M" }
             ],
             patientNames: [
-                "Mendoza, Beatriz", "Gallagher, Deborah", "Robertson, Emanuel", "Sterling, Ignacio", 
-                "Dupont, Jacqueline", "Novak, Katarina", "MacLeod, Lachlan", "Petrov, Mikhail",
-                "Tremblay, Nicolette", "Benitez, Oswaldo", "Vance, Christopher", "Wright, Alexander"
+                "mendoza, beatriz", "gallagher, deborah", "robertson, emanuel", "sterling, ignacio", 
+                "dupont, jacqueline", "novak, katarina", "macleod, lachlan", "petrov, mikhail",
+                "tremblay, nicolette", "benitez, oswaldo", "vance, christopher", "wright, alexander"
             ],
             memberIDs: [
-                "HC-9821-0012", "UB-489120-X", "ADA-990123-9", "MEM-109283-A", "POL-8830192-0"
+                "hc-9821-0012", "ub-489120-x", "ada-990123-9", "mem-109283-a", "pol-8830192-0"
             ],
             npisAndTaxIDs: [
                 "1982019201", "1029384756", "1487654321", "1209384712", "1831102938"
@@ -601,18 +605,18 @@
 
         // Form Templates Configuration
         const CLAIM_TEMPLATES = [
-            { type: 'hcfa', badge: 'CMS-1500: BOX 24D (CPT/HCPCS)', poolKey: 'cptCodes', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 24D - CPT/HCPCS Procedure Code', ruleHint: 'Rule: Standard CPT Code Entry' },
-            { type: 'hcfa', badge: 'CMS-1500: BOX 21 (ICD-10 DX)', poolKey: 'icd10Codes', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 21 - Diagnosis Code (ICD-10)', ruleHint: 'Rule: NO dots (.) in Diagnosis Codes' },
-            { type: 'hcfa', badge: 'CMS-1500: BOX 1A (INSURED ID)', poolKey: 'memberIDs', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 1a - Insured ID Number', ruleHint: 'Rule: Key exact Insured ID' },
-            { type: 'hcfa', badge: 'CMS-1500: BOX 2 (PATIENT NAME)', poolKey: 'patientNames', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 2 - Patient Last Name, First Name', ruleHint: 'Rule: Key exact Patient Name' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 24D (CPT/HCPCS)', poolKey: 'cptCodes', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 24D - CPT/HCPCS Procedure Code', ruleHint: 'Rule: CAPITAL LETTERS ONLY' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 21 (ICD-10 DX)', poolKey: 'icd10Codes', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 21 - Diagnosis Code (ICD-10)', ruleHint: 'Rule: CAPITAL LETTERS & NO dots (.)' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 1A (INSURED ID)', poolKey: 'memberIDs', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 1a - Insured ID Number', ruleHint: 'Rule: CAPITAL LETTERS ONLY' },
+            { type: 'hcfa', badge: 'CMS-1500: BOX 2 (PATIENT NAME)', poolKey: 'patientNames', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 2 - Patient Last Name, First Name', ruleHint: 'Rule: CAPITAL LETTERS ONLY' },
             { type: 'hcfa', badge: 'CMS-1500: BOX 24F (CHARGES)', poolKey: 'billedAmounts', boxColor: 'rgba(239, 68, 68, 0.22)', labelColor: '#991b1b', title: 'Box 24F - Billed Line Charges', ruleHint: 'Rule: NO $ or commas in Amount fields' },
 
             { type: 'ub04', badge: 'UB-04: FL 42 (REVENUE CODE)', poolKey: 'revenueCodes', boxColor: 'rgba(16, 185, 129, 0.22)', labelColor: '#065f46', title: 'Form Locator 42 - Revenue Code', ruleHint: 'Rule: Standard 4-digit Revenue Code' },
             { type: 'ub04', badge: 'UB-04: FL 04 (TYPE OF BILL)', poolKey: 'typeOfBill', boxColor: 'rgba(16, 185, 129, 0.22)', labelColor: '#065f46', title: 'Form Locator 4 - Type of Bill', ruleHint: 'Rule: Standard 4-digit Type of Bill' },
             { type: 'ub04', badge: 'UB-04: FL 47 (TOTAL CHARGES)', poolKey: 'billedAmounts', boxColor: 'rgba(16, 185, 129, 0.22)', labelColor: '#065f46', title: 'Form Locator 47 - Total Charges', ruleHint: 'Rule: NO $ or commas in Amount fields' },
 
-            { type: 'ada', badge: 'ADA DENTAL: BOX 29 (CDT CODE)', poolKey: 'cdtDentalCodes', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 29 - Procedure Code (CDT)', ruleHint: 'Rule: Standard 5-char CDT Code' },
-            { type: 'ada', badge: 'ADA DENTAL: BOX 27 (TOOTH / SURF)', poolKey: 'toothNumSurfaces', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 27 - Tooth Number / Surface', ruleHint: 'Rule: MUST add commas (,) in tooth surface' },
+            { type: 'ada', badge: 'ADA DENTAL: BOX 29 (CDT CODE)', poolKey: 'cdtDentalCodes', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 29 - Procedure Code (CDT)', ruleHint: 'Rule: CAPITAL LETTERS ONLY' },
+            { type: 'ada', badge: 'ADA DENTAL: BOX 27 (TOOTH / SURF)', poolKey: 'toothNumSurfaces', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 27 - Tooth Number / Surface', ruleHint: 'Rule: CAPITAL LETTERS & MUST add commas (,)' },
             { type: 'ada', badge: 'ADA DENTAL: BOX 31 (FEE AMOUNT)', poolKey: 'billedAmounts', boxColor: 'rgba(59, 130, 246, 0.22)', labelColor: '#1e40af', title: 'Box 31 - Fee Amount', ruleHint: 'Rule: NO $ or commas in Fee fields' },
 
             { type: 'general', badge: 'GENERAL: SERVICE DATE', poolKey: 'datesOfService', boxColor: 'rgba(100, 116, 139, 0.22)', labelColor: '#334155', title: 'Service Date / Receipt Date', ruleHint: 'Rule: NO slashes (/) in Date fields' }
@@ -736,10 +740,10 @@
 
             if (typeof poolItem === 'object') {
                 displayText = poolItem.display;
-                expectedText = poolItem.expected;
+                expectedText = poolItem.expected.toUpperCase();
             } else {
                 displayText = poolItem;
-                expectedText = poolItem;
+                expectedText = poolItem.toUpperCase();
             }
 
             const styleType = Math.random() > 0.35 ? 'handwritten' : 'printed';
@@ -962,8 +966,8 @@
             if (!state.isSessionActive) return;
 
             const duration = (Date.now() - state.startTime) / 1000;
-            const enteredText = DOM.transcriptionInput.value.trim();
-            const expectedText = state.currentChallenge.expectedText;
+            const enteredText = DOM.transcriptionInput.value.trim(); // Keyed value
+            const expectedText = state.currentChallenge.expectedText; // Always UPPERCASE
 
             const isCorrect = isFlaggedIllegible ? false : (enteredText === expectedText);
             const status = isCorrect ? 'passed' : (isFlaggedIllegible ? 'flagged' : 'failed');
@@ -1102,7 +1106,7 @@
                     </div>
                     <div class="border p-1.5">
                         <span class="block font-bold text-slate-500 uppercase text-[8px]">2. PATIENT'S NAME</span>
-                        <p class="mt-0.5"><span class="underline">Mendoza, Beatriz</span></p>
+                        <p class="mt-0.5"><span class="underline">MENDOZA, BEATRIZ</span></p>
                     </div>
                 </div>
 
