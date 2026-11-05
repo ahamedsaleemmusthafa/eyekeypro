@@ -275,7 +275,7 @@
                     <div class="bg-slate-900 border border-slate-700/70 p-2.5 rounded-lg flex flex-col">
                         <span class="text-[11px] text-slate-400 font-medium">Accuracy</span>
                         <span id="accuracyMetric" class="text-2xl font-bold text-emerald-400 font-mono mt-0.5">100.0%</span>
-                        <span class="text-[10px] text-slate-500">Benchmark: &gt;98.5%</span>
+                        <span class="text-[10px] text-slate-500">Benchmark: >98.5%</span>
                     </div>
 
                     <!-- KPH Metric -->
@@ -512,19 +512,19 @@
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
                     <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 2: Amount Fields</h4>
-                    <p>Do NOT key dollar sign (<code>$</code>) or commas. Enter plain digits e.g. Image <code>$1,250.00</code> &rarr; Key <code>1250.00</code>.</p>
+                    <p>Do NOT key dollar sign (<code>$</code>) or commas. Enter plain digits e.g. Image <code>$1,250.00</code> → Key <code>1250.00</code>.</p>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
                     <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 3: Date Fields</h4>
-                    <p>Do NOT key slashes (<code>/</code>). Enter contiguous MMDDYYYY digits e.g. Image <code>09/28/2026</code> &rarr; Key <code>09282026</code>.</p>
+                    <p>Do NOT key slashes (<code>/</code>). Enter contiguous MMDDYYYY digits e.g. Image <code>09/28/2026</code> → Key <code>09282026</code>.</p>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
                     <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 4: Tooth Surface</h4>
-                    <p>MUST add commas between surface letters e.g. Image <code>mod</code> &rarr; Key <code>M,O,D</code>.</p>
+                    <p>MUST add commas between surface letters e.g. Image <code>mod</code> → Key <code>M,O,D</code>.</p>
                 </div>
                 <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
                     <h4 class="font-bold text-amber-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-dot"></i> Rule 5: ICD-10 Diagnosis Format</h4>
-                    <p>Do NOT key decimal dots (<code>.</code>) in ICD-10 codes e.g. Image <code>m54.50</code> &rarr; Key <code>M5450</code>.</p>
+                    <p>Do NOT key decimal dots (<code>.</code>) in ICD-10 codes e.g. Image <code>m54.50</code> → Key <code>M5450</code>.</p>
                 </div>
             </div>
 
@@ -966,8 +966,9 @@
             if (!state.isSessionActive) return;
 
             const duration = (Date.now() - state.startTime) / 1000;
-            const enteredText = DOM.transcriptionInput.value.trim(); // Keyed value
-            const expectedText = state.currentChallenge.expectedText; // Always UPPERCASE
+            // Always treat entered value as uppercase for validation and comparison
+            const enteredText = DOM.transcriptionInput.value.trim().toUpperCase(); 
+            const expectedText = state.currentChallenge.expectedText; // Expected is already UPPERCASE
 
             const isCorrect = isFlaggedIllegible ? false : (enteredText === expectedText);
             const status = isCorrect ? 'passed' : (isFlaggedIllegible ? 'flagged' : 'failed');
@@ -1086,7 +1087,7 @@
         }
 
         function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return str.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
         }
 
         function renderMockDocumentPage() {
@@ -1193,6 +1194,14 @@
             DOM.claimTypeSelect.addEventListener('change', (e) => {
                 state.currentFormFilter = e.target.value;
                 if (state.isSessionActive) generateProceduralSnippet();
+            });
+
+            // Enforce actual uppercase value during keystrokes/paste while preserving caret position
+            DOM.transcriptionInput.addEventListener('input', (e) => {
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.toUpperCase();
+                e.target.setSelectionRange(start, end);
             });
 
             DOM.transcriptionInput.addEventListener('keydown', (e) => {
